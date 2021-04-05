@@ -203,7 +203,8 @@ public protocol TrimmerViewDelegate: class {
     }
 
     private func setupGestures() {
-
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(TrimmerView.handleTapGesture) )
+                self.addGestureRecognizer(tapGestureRecognizer)
         let leftPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(TrimmerView.handlePanGesture))
         leftHandleView.addGestureRecognizer(leftPanGestureRecognizer)
         let rightPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(TrimmerView.handlePanGesture))
@@ -223,6 +224,10 @@ public protocol TrimmerViewDelegate: class {
 
     // MARK: - Trim Gestures
 
+    @objc func handleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        updateSelectedTime(stoppedMoving: true)
+   }
+    
     @objc func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
         guard let view = gestureRecognizer.view, let superView = gestureRecognizer.view?.superview else { return }
         let isLeftGesture = view == leftHandleView
@@ -309,9 +314,12 @@ public protocol TrimmerViewDelegate: class {
     }
 
     private func updateSelectedTime(stoppedMoving: Bool) {
+        positionBar.frame.origin.x = leftHandleView.frame.origin.x + handleWidth
+        
         guard let playerTime = positionBarTime else {
             return
         }
+        
         if stoppedMoving {
             delegate?.positionBarStoppedMoving(playerTime)
         } else {

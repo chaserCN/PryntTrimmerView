@@ -129,7 +129,9 @@ class AssetVideoScrollView: UIScrollView {
     private func generateImages(for asset: AVAsset, at times: [NSValue], with maximumSize: CGSize, visibleThumnails: Int) {
         generator = AVAssetImageGenerator(asset: asset)
         generator?.appliesPreferredTrackTransform = true
-
+        generator?.requestedTimeToleranceAfter = .zero
+        generator?.requestedTimeToleranceBefore = .zero
+        
         let scaledSize = CGSize(width: maximumSize.width * UIScreen.main.scale, height: maximumSize.height * UIScreen.main.scale)
         generator?.maximumSize = scaledSize
         var count = 0
