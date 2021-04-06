@@ -253,7 +253,7 @@ public protocol TrimmerViewDelegate: class {
             } else if let endTime = endTime {
                 seek(to: endTime)
             }
-            updateSelectedTime(stoppedMoving: false)
+            updateSelectedTime(stoppedMoving: false, jumpToEnd: !isLeftGesture)
 
         case .cancelled, .ended, .failed:
             updateSelectedTime(stoppedMoving: true)
@@ -313,8 +313,12 @@ public protocol TrimmerViewDelegate: class {
         return getTime(from: endPosition)
     }
 
-    private func updateSelectedTime(stoppedMoving: Bool) {
-        positionBar.frame.origin.x = leftHandleView.frame.origin.x + handleWidth
+    private func updateSelectedTime(stoppedMoving: Bool, jumpToEnd: Bool = false) {
+        if jumpToEnd {
+            positionBar.frame.origin.x = rightHandleView.frame.origin.x
+        } else {
+            positionBar.frame.origin.x = leftHandleView.frame.origin.x + handleWidth
+        }
         
         guard let playerTime = positionBarTime else {
             return
